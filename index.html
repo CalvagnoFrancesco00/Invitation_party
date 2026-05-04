@@ -10,14 +10,15 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gold: #b5935a;
-    --gold-light: #e8d5b0;
-    --gold-pale: #faf5ec;
-    --dark: #1a1612;
-    --mid: #4a3f2f;
-    --text: #2e2419;
-    --subtle: #8a7860;
-    --white: #fffcf7;
+    --gold: #c8b27a;
+    --gold-light: #e0cfaa;
+    --gold-pale: #eef1f8;
+    --navy: #0d1b3e;
+    --navy-mid: #1e3a6e;
+    --navy-light: #2a4f8a;
+    --text: #0d1b3e;
+    --subtle: #4a6fa5;
+    --white: #f8faff;
   }
 
   html { scroll-behavior: smooth; }
@@ -28,7 +29,37 @@
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
+    cursor: none;
   }
+
+  /* ── CUSTOM CURSOR ── */
+  .cursor {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+    mix-blend-mode: multiply;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(200,178,122,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+  }
+
+  body:has(a:hover) .cursor, body:has(button:hover) .cursor { width: 14px; height: 14px; }
+  body:has(a:hover) .cursor-ring, body:has(button:hover) .cursor-ring { width: 56px; height: 56px; border-color: rgba(200,178,122,0.9); }
 
   /* ── HERO ── */
   .hero {
@@ -40,18 +71,25 @@
     justify-content: center;
     text-align: center;
     padding: 60px 32px 80px;
-    background: var(--dark);
+    background: var(--navy);
     overflow: hidden;
   }
 
-  .hero::before {
-    content: '';
+  /* Canvas for particles */
+  #particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero-glow {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(181,147,90,0.18) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 40% at 20% 100%, rgba(181,147,90,0.10) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,178,122,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 100%, rgba(30,58,110,0.4) 0%, transparent 60%);
     pointer-events: none;
+    transition: transform 0.8s ease;
   }
 
   .ornament {
@@ -59,6 +97,13 @@
     margin-bottom: 28px;
     opacity: 0;
     animation: fadeUp 1s ease 0.2s forwards;
+    filter: drop-shadow(0 0 18px rgba(200,178,122,0.3));
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+
+  .ornament:hover {
+    transform: scale(1.1) rotate(15deg);
+    filter: drop-shadow(0 0 30px rgba(200,178,122,0.6));
   }
 
   .hero-sub {
@@ -82,12 +127,17 @@
     letter-spacing: -1px;
     opacity: 0;
     animation: fadeUp 1s ease 0.6s forwards;
+    position: relative;
   }
 
   .hero-name em {
     font-style: italic;
     color: var(--gold-light);
+    display: inline-block;
+    transition: letter-spacing 0.4s ease;
   }
+
+  .hero-name:hover em { letter-spacing: 4px; }
 
   .hero-degree {
     font-family: 'Cormorant Garamond', serif;
@@ -115,19 +165,32 @@
     height: 0.5px;
     background: var(--gold);
     opacity: 0.5;
+    transform-origin: center;
+    transition: transform 0.4s ease, opacity 0.4s ease;
   }
 
-  .divider-line svg {
-    width: 14px;
-    height: 14px;
-    fill: var(--gold);
-    flex-shrink: 0;
+  .divider-line:hover span { transform: scaleX(1.5); opacity: 0.9; }
+
+  .divider-svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+  .flower-petals ellipse {
+    transform-origin: 0 0;
+    transition: all 0.5s ease;
+  }
+
+  .divider-line:hover .flower-petals { animation: spinSlow 3s linear infinite; }
+
+  @keyframes spinSlow { to { transform: rotate(360deg); } }
+
+  .flower-petals {
+    transform-origin: 11px 11px;
+    transition: transform 0.5s ease;
   }
 
   .hero-invite {
     font-family: 'Cormorant Garamond', serif;
     font-size: 17px;
-    color: rgba(255,252,247,0.72);
+    color: rgba(248,250,255,0.72);
     line-height: 1.7;
     max-width: 300px;
     opacity: 0;
@@ -158,12 +221,28 @@
   .scroll-cue .arrow {
     width: 1px;
     height: 32px;
-    background: var(--gold);
-    opacity: 0.5;
-    animation: pulse 2s ease-in-out infinite;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: arrowDrop 1.5s ease-in-out infinite;
   }
 
-  /* ── DETAILS SECTION ── */
+  @keyframes arrowDrop {
+    0% { transform: scaleY(0.6) translateY(-4px); opacity: 0.4; }
+    50% { transform: scaleY(1.2) translateY(4px); opacity: 1; }
+    100% { transform: scaleY(0.6) translateY(-4px); opacity: 0.4; }
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--navy-mid), var(--gold), var(--gold-light));
+    width: 0%;
+    z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* ── SECTIONS ── */
   .section {
     padding: 72px 28px;
   }
@@ -187,6 +266,7 @@
     text-align: center;
     position: relative;
     overflow: hidden;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;
   }
 
   .date-card::before {
@@ -195,7 +275,12 @@
     top: 0; left: 0; right: 0;
     height: 3px;
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0.3);
+    transition: transform 0.6s ease;
   }
+
+  .date-card:hover::before { transform: scaleX(1); }
+  .date-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(13,27,62,0.12); }
 
   .date-day {
     font-family: 'Cormorant Garamond', serif;
@@ -204,13 +289,16 @@
     line-height: 1;
     color: var(--gold);
     letter-spacing: -4px;
+    transition: letter-spacing 0.4s ease, color 0.3s ease;
   }
+
+  .date-card:hover .date-day { letter-spacing: 0px; color: var(--navy-mid); }
 
   .date-month-year {
     font-family: 'Cormorant Garamond', serif;
     font-size: 22px;
     font-weight: 300;
-    color: var(--mid);
+    color: var(--navy-mid);
     letter-spacing: 2px;
     margin-top: 4px;
     text-transform: uppercase;
@@ -222,21 +310,19 @@
     gap: 8px;
     margin-top: 24px;
     padding: 10px 24px;
-    background: var(--gold);
+    background: var(--navy);
     border-radius: 100px;
     font-size: 13px;
     font-weight: 500;
     letter-spacing: 1px;
     color: var(--white);
+    transition: background 0.3s ease, transform 0.2s ease;
   }
 
+  .date-card:hover .date-time { background: var(--gold); transform: scale(1.05); }
+
   /* ── INFO BLOCKS ── */
-  .info-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 0;
-  }
+  .info-grid { display: flex; flex-direction: column; gap: 16px; }
 
   .info-block {
     display: flex;
@@ -244,65 +330,76 @@
     gap: 20px;
     padding: 24px;
     background: var(--white);
-    border: 0.5px solid #e8e0d4;
+    border: 0.5px solid #d4ddf0;
     border-radius: 14px;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
   }
+
+  .info-block::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--navy-mid), var(--gold));
+    transform: scaleY(0);
+    transition: transform 0.4s ease;
+    border-radius: 3px 0 0 3px;
+  }
+
+  .info-block:hover::after { transform: scaleY(1); }
+  .info-block:hover { transform: translateX(8px); box-shadow: 0 8px 32px rgba(13,27,62,0.10); border-color: var(--gold-light); }
 
   .info-icon {
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     background: var(--gold-pale);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    transition: background 0.3s ease, transform 0.3s ease;
   }
 
-  .info-icon svg {
-    width: 20px;
-    height: 20px;
-    fill: var(--gold);
-  }
+  .info-block:hover .info-icon { background: var(--navy); transform: rotate(10deg) scale(1.1); }
+  .info-block:hover .info-icon svg { fill: var(--gold); }
+
+  .info-icon svg { width: 20px; height: 20px; fill: var(--navy-mid); transition: fill 0.3s ease; }
 
   .info-text h3 {
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--subtle);
-    font-weight: 400;
-    margin-bottom: 6px;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--subtle); font-weight: 400; margin-bottom: 6px;
   }
 
-  .info-text p {
+  .info-text p, .info-text a {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    color: var(--text);
-    line-height: 1.4;
-    font-weight: 400;
+    font-size: 18px; color: var(--text); line-height: 1.4; font-weight: 400;
   }
 
-  .info-text small {
-    display: block;
-    font-size: 13px;
-    color: var(--subtle);
-    margin-top: 4px;
-  }
+  .info-text a { color: var(--navy-mid); text-decoration: none; transition: color 0.3s ease; }
+  .info-text a:hover { color: var(--gold); }
+  .info-text small { display: block; font-size: 13px; color: var(--subtle); margin-top: 4px; }
 
   /* ── QUOTE ── */
   .quote-section {
-    padding: 64px 28px;
-    background: var(--dark);
+    padding: 80px 28px;
+    background: var(--navy);
     text-align: center;
     position: relative;
     overflow: hidden;
   }
 
-  .quote-section::before {
-    content: '';
+  .quote-bg-text {
     position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 100% 100% at 50% 50%, rgba(181,147,90,0.08) 0%, transparent 70%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 200px;
+    color: rgba(200,178,122,0.04);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: -10px;
+    transition: transform 0.6s ease, opacity 0.6s ease;
+    user-select: none;
   }
 
   .quote-text {
@@ -314,126 +411,226 @@
     position: relative;
     max-width: 320px;
     margin: 0 auto;
+    transition: transform 0.4s ease;
   }
+
+  .quote-section:hover .quote-text { transform: translateY(-4px); }
+  .quote-section:hover .quote-bg-text { opacity: 0.07; transform: translate(-50%, -52%) scale(1.02); }
 
   .quote-mark {
-    font-size: 80px;
-    line-height: 0.5;
-    color: var(--gold);
-    opacity: 0.4;
-    display: block;
-    margin-bottom: 16px;
+    font-size: 80px; line-height: 0.5; color: var(--gold); opacity: 0.4;
+    display: block; margin-bottom: 16px;
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
 
+  .quote-section:hover .quote-mark { opacity: 0.7; transform: scale(1.1); }
+
   .quote-author {
-    font-size: 12px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin-top: 24px;
-    font-weight: 300;
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-top: 24px; font-weight: 300; position: relative;
+  }
+
+  /* ── COUNTDOWN ── */
+  .countdown-section {
+    padding: 60px 28px;
+    background: var(--gold-pale);
+    text-align: center;
+  }
+
+  .countdown-grid {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .count-box {
+    background: var(--navy);
+    border-radius: 14px;
+    padding: 20px 18px 16px;
+    min-width: 72px;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
     position: relative;
+    overflow: hidden;
+  }
+
+  .count-box::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+  }
+
+  .count-box:hover::before { transform: scaleX(1); }
+  .count-box:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(13,27,62,0.25); }
+
+  .count-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+
+  .count-box:hover .count-num { transform: scale(1.1); }
+
+  .count-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(248,250,255,0.5);
+    display: block;
+    margin-top: 6px;
   }
 
   /* ── RSVP ── */
   .rsvp-section {
     padding: 72px 28px;
     text-align: center;
-    background: var(--gold-pale);
+    background: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rsvp-section::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,178,122,0.08), transparent);
+    pointer-events: none;
   }
 
   .rsvp-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 40px;
-    font-weight: 300;
-    color: var(--text);
-    margin-bottom: 12px;
+    font-size: 40px; font-weight: 300; color: var(--text); margin-bottom: 12px;
   }
 
   .rsvp-sub {
-    font-size: 14px;
-    color: var(--subtle);
-    line-height: 1.6;
-    margin-bottom: 40px;
-    max-width: 280px;
-    margin-left: auto;
-    margin-right: auto;
+    font-size: 14px; color: var(--subtle); line-height: 1.6; margin-bottom: 40px;
+    max-width: 280px; margin-left: auto; margin-right: auto;
   }
 
-  .rsvp-form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
+  .rsvp-form { display: flex; flex-direction: column; gap: 14px; }
 
-  .rsvp-form input {
+  .input-wrap { position: relative; }
+
+  .input-wrap input {
     width: 100%;
     padding: 16px 20px;
-    border: 0.5px solid #d4c9b4;
+    border: 1px solid #d4ddf0;
     border-radius: 12px;
     background: var(--white);
     font-family: 'Jost', sans-serif;
     font-size: 15px;
     color: var(--text);
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
     -webkit-appearance: none;
   }
 
-  .rsvp-form input:focus {
-    border-color: var(--gold);
+  .input-wrap input:focus {
+    border-color: var(--navy-mid);
+    box-shadow: 0 0 0 3px rgba(13,27,62,0.08);
+    transform: translateY(-2px);
   }
 
-  .rsvp-form input::placeholder {
-    color: #b5a88a;
+  .input-wrap input::placeholder { color: #a0b0c8; }
+
+  .input-wrap label {
+    position: absolute;
+    top: 50%; left: 20px;
+    transform: translateY(-50%);
+    font-size: 14px; color: #a0b0c8;
+    pointer-events: none;
+    transition: all 0.25s ease;
+    background: var(--white);
+    padding: 0 4px;
+  }
+
+  .input-wrap input:focus ~ label,
+  .input-wrap input:not(:placeholder-shown) ~ label {
+    top: 0; font-size: 11px; color: var(--navy-mid); letter-spacing: 1px;
   }
 
   .btn-rsvp {
-    width: 100%;
-    padding: 18px;
-    background: var(--gold);
-    border: none;
-    border-radius: 12px;
+    width: 100%; padding: 18px;
+    background: var(--navy);
+    border: none; border-radius: 12px;
     font-family: 'Jost', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 3px;
-    text-transform: uppercase;
+    font-size: 13px; font-weight: 500;
+    letter-spacing: 3px; text-transform: uppercase;
     color: var(--white);
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
-    -webkit-tap-highlight-color: transparent;
-    margin-top: 6px;
+    cursor: none;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-top: 6px; position: relative; overflow: hidden;
   }
 
-  .btn-rsvp:active { transform: scale(0.98); opacity: 0.9; }
+  .btn-rsvp::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(200,178,122,0.2) 100%);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+
+  .btn-rsvp:hover::before { transform: translateX(0); }
+  .btn-rsvp:hover { background: var(--navy-mid); box-shadow: 0 12px 40px rgba(13,27,62,0.3); transform: translateY(-3px); }
+  .btn-rsvp:active { transform: scale(0.98) translateY(0); }
+
+  /* ── RIPPLE ── */
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(200,178,122,0.3);
+    transform: scale(0);
+    animation: rippleAnim 0.6s ease-out forwards;
+    pointer-events: none;
+  }
+
+  @keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+  }
 
   /* ── FOOTER ── */
   footer {
-    background: var(--dark);
+    background: var(--navy);
     padding: 48px 28px;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
   }
 
   footer p {
     font-family: 'Cormorant Garamond', serif;
     font-size: 15px;
-    color: rgba(255,252,247,0.45);
+    color: rgba(248,250,255,0.45);
     line-height: 1.7;
   }
 
-  footer strong {
-    color: var(--gold-light);
-    font-weight: 400;
-  }
+  footer strong { color: var(--gold-light); font-weight: 400; }
 
-  /* ── CONFIRMATION TOAST ── */
+  /* ── TOAST ── */
   .toast {
     position: fixed;
-    bottom: 32px;
-    left: 50%;
+    bottom: 32px; left: 50%;
     transform: translateX(-50%) translateY(100px);
-    background: var(--dark);
+    background: var(--navy);
     color: var(--white);
     padding: 14px 28px;
     border-radius: 100px;
@@ -444,6 +641,7 @@
     z-index: 999;
     pointer-events: none;
   }
+
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   /* ── ANIMATIONS ── */
@@ -452,58 +650,104 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
+  @keyframes fadeIn { to { opacity: 1; } }
 
-  @keyframes pulse {
-    0%, 100% { transform: scaleY(1); opacity: 0.5; }
-    50%       { transform: scaleY(1.3); opacity: 1; }
-  }
-
-  /* ── SCROLL ANIMATIONS ── */
+  /* ── REVEAL ── */
   .reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
   }
-  .reveal.visible {
-    opacity: 1;
-    transform: none;
+
+  .reveal.visible { opacity: 1; transform: none; }
+
+  .reveal-left {
+    opacity: 0; transform: translateX(-40px);
+    transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
   }
+
+  .reveal-left.visible { opacity: 1; transform: none; }
+
+  .reveal-scale {
+    opacity: 0; transform: scale(0.85);
+    transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1), transform 0.8s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+  /* Stagger delays */
+  .delay-1 { transition-delay: 0.1s; }
+  .delay-2 { transition-delay: 0.2s; }
+  .delay-3 { transition-delay: 0.3s; }
+  .delay-4 { transition-delay: 0.4s; }
 </style>
 </head>
 <body>
 
+<!-- PROGRESS BAR -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
 <!-- HERO -->
-<section class="hero">
-  <svg class="ornament" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M60 4 L64 18 L78 18 L67 27 L71 41 L60 32 L49 41 L53 27 L42 18 L56 18 Z" fill="#b5935a" opacity="0.8"/>
-    <line x1="10" y1="50" x2="110" y2="50" stroke="#b5935a" stroke-width="0.5" opacity="0.5"/>
-    <line x1="20" y1="56" x2="100" y2="56" stroke="#b5935a" stroke-width="0.5" opacity="0.3"/>
-    <circle cx="60" cy="65" r="3" fill="none" stroke="#b5935a" stroke-width="0.5" opacity="0.6"/>
-    <circle cx="40" cy="65" r="1.5" fill="#b5935a" opacity="0.4"/>
-    <circle cx="80" cy="65" r="1.5" fill="#b5935a" opacity="0.4"/>
+<section class="hero" id="hero">
+  <canvas id="particles"></canvas>
+  <div class="hero-glow" id="heroGlow"></div>
+
+  <!-- FIORE SVG -->
+  <svg class="ornament" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(60,40)">
+      <g class="flower-petals">
+        <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" transform="rotate(0)"/>
+        <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" transform="rotate(45)"/>
+        <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" transform="rotate(90)"/>
+        <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" transform="rotate(135)"/>
+        <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" transform="rotate(180)"/>
+        <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" transform="rotate(225)"/>
+        <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" transform="rotate(270)"/>
+        <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" transform="rotate(315)"/>
+      </g>
+      <circle cx="0" cy="0" r="9" fill="#0d1b3e" stroke="#c8b27a" stroke-width="0.8"/>
+      <circle cx="0" cy="0" r="5.5" fill="#c8b27a" opacity="0.9"/>
+    </g>
+    <line x1="10" y1="62" x2="110" y2="62" stroke="#c8b27a" stroke-width="0.5" opacity="0.5"/>
+    <line x1="20" y1="69" x2="100" y2="69" stroke="#c8b27a" stroke-width="0.5" opacity="0.3"/>
+    <circle cx="60" cy="80" r="3" fill="none" stroke="#c8b27a" stroke-width="0.5" opacity="0.6"/>
+    <circle cx="40" cy="80" r="1.5" fill="#c8b27a" opacity="0.4"/>
+    <circle cx="80" cy="80" r="1.5" fill="#c8b27a" opacity="0.4"/>
   </svg>
 
   <p class="hero-sub">Con immensa gioia vi annuncio</p>
 
   <h1 class="hero-name">
-    <em>Giulia</em><br>De romanis
+    <em>Giulia</em><br>De Romanis
   </h1>
 
-  <p class="hero-degree">Laurea in lettere</p>
+  <p class="hero-degree">Laurea in Lingue e Letterature Moderne</p>
 
   <div class="divider-line">
     <span></span>
-    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-      <path d="M8 1l1.5 4.5H15l-4 3 1.5 4.5L8 10.5 3.5 13 5 8.5l-4-3h5.5z"/>
+    <svg class="divider-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g class="flower-petals" transform="translate(11,11)">
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(0)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(45)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(90)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(135)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(180)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(225)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(270)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(315)"/>
+        <circle cx="0" cy="0" r="3" fill="#c8b27a"/>
+      </g>
     </svg>
     <span></span>
   </div>
 
   <p class="hero-invite">
-    Ho l'onore di invitarti a condividere con me<br>questo giorno così speciale
+    Ti invito a celebrare insieme a me<br>
+    il festeggiamento della mia laurea
   </p>
 
   <div class="scroll-cue">
@@ -513,11 +757,35 @@
 </section>
 
 
+<!-- COUNTDOWN -->
+<section class="countdown-section">
+  <p class="section-label reveal">Manca sempre meno</p>
+  <div class="countdown-grid">
+    <div class="count-box reveal delay-1">
+      <span class="count-num" id="cd-days">--</span>
+      <span class="count-label">Giorni</span>
+    </div>
+    <div class="count-box reveal delay-2">
+      <span class="count-num" id="cd-hours">--</span>
+      <span class="count-label">Ore</span>
+    </div>
+    <div class="count-box reveal delay-3">
+      <span class="count-num" id="cd-min">--</span>
+      <span class="count-label">Minuti</span>
+    </div>
+    <div class="count-box reveal delay-4">
+      <span class="count-num" id="cd-sec">--</span>
+      <span class="count-label">Secondi</span>
+    </div>
+  </div>
+</section>
+
+
 <!-- DATE & TIME -->
 <section class="section">
   <p class="section-label reveal">Festeggiamenti</p>
 
-  <div class="date-card reveal">
+  <div class="date-card reveal-scale">
     <div class="date-day">11</div>
     <div class="date-month-year">Luglio · 2026</div>
     <div class="date-time">
@@ -533,51 +801,43 @@
   <p class="section-label reveal">Dove</p>
 
   <div class="info-grid">
-    <div class="info-block reveal">
-      <div class="info-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-      </div>
-      <div class="info-text">
-        <h3>Discorso di Laurea</h3>
-        <a href="https://www.google.com/maps/place/Unimarconi+sede+esame/@41.9087878,12.4608003,17z/data=!3m1!4b1!4m6!3m5!1s0x132f605fa3b6c7af:0x3cbb63bd17835907!8m2!3d41.9087878!4d12.4633752!16s%2Fg%2F11c8057h5m?entry=ttu&g_ep=EgoyMDI2MDQyOC4wIKXMDSoASAFQAw%3D%3D" target="_blank" style="color: var(--gold); text-decoration: none; font-family: 'Cormorant Garamond', serif; font-size: 18px;">Università degli Studi<br> Unimarconi</a>
-        <small>06/07/2026 · Ore 15:00 · Via paolo emilio, 29 – Roma</small>
-      </div>
-    </div>
-
-    <div class="info-block reveal">
+    <div class="info-block reveal-left delay-1">
       <div class="info-icon">
         <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
       </div>
       <div class="info-text">
         <h3>Festeggiamenti</h3>
-        <a href="https://www.google.com/maps/place/Agriturismo+%22La+Cantina%22+%7C+Ristorazione+%7C+Matrimoni+%7C+Azienda+Agricola/@41.588243,12.9065791,17z/data=!3m1!4b1!4m6!3m5!1s0x132571493995fa55:0xcbd75c4e2d098087!8m2!3d41.588243!4d12.909154!16s%2Fg%2F11k4wfk8xx?entry=ttu&g_ep=EgoyMDI2MDQyOC4wIKXMDSoASAFQAw%3D%3D" target="_blank" style="color: var(--gold); text-decoration: none; font-family: 'Cormorant Garamond', serif; font-size: 18px;">Agriturismo La Cantina</a>
+        <a href="https://www.google.com/maps/place/Agriturismo+%22La+Cantina%22" target="_blank">Agriturismo La Cantina</a>
         <small>Ore 20:30 · Via Alessandro III, 15 – Cisterna di Latina</small>
       </div>
     </div>
 
+    <br>
+    <p class="section-label reveal">Discorso di Laurea</p>
 
-    <!-- <div class="info-block reveal">
+    <div class="info-block reveal-left delay-2">
       <div class="info-icon">
-        <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
       </div>
       <div class="info-text">
-        <h3>Info & RSVP</h3>
-        <p>+39 348 123 4567</p>
-        <small>Conferma entro il 7 giugno</small>
+        <h3></h3>
+        <a href="https://www.google.com/maps/place/Unimarconi+sede+esame" target="_blank">Università degli Studi<br>Unimarconi</a>
+        <small>06/07/2026 · Ore 15:00 · Via Paolo Emilio, 29 – Roma</small>
       </div>
-    </div> -->
+    </div>
   </div>
 </section>
 
 
 <!-- QUOTE -->
 <section class="quote-section">
+  <div class="quote-bg-text">✦</div>
   <div style="position: relative;">
     <span class="quote-mark">"</span>
     <p class="quote-text reveal">
       La laurea non è un punto di arrivo, ma il primo passo verso infinite possibilità.
     </p>
-    <p class="quote-author reveal">—</p>
+    <p class="quote-author reveal delay-2">—</p>
   </div>
 </section>
 
@@ -588,41 +848,203 @@
   <p class="rsvp-sub reveal">Facci sapere se parteciperai entro il 7 giugno. Non vedo l'ora di festeggiare con te!</p>
 
   <div class="rsvp-form reveal">
-    <input type="text" id="nome" placeholder="Il tuo nome" autocomplete="name">
-    <input type="email" id="email" placeholder="Email (opzionale)" autocomplete="email">
-    <button class="btn-rsvp" onclick="handleRsvp()">Confermo la presenza</button>
+    <div class="input-wrap">
+      <input type="text" id="nome" placeholder=" " autocomplete="name">
+      <label>Il tuo nome</label>
+    </div>
+    <div class="input-wrap">
+      <input type="email" id="email" placeholder=" " autocomplete="email">
+      <label>Email (opzionale)</label>
+    </div>
+    <button class="btn-rsvp" onclick="handleRsvp(event)">Confermo la presenza</button>
   </div>
 </section>
 
 
 <!-- FOOTER -->
 <footer>
-  <!-- <p>Con tutto il cuore,<br><strong>Giulia De Romanis</strong></p> -->
-  <p style="margin-top: 16px; font-size: 13px; opacity: 0.5;">11 luglio 2026 · Cisterna di Latina</p>
+  <p style="margin-bottom: 8px; opacity: 0.7;">
+    <svg width="20" height="20" viewBox="0 0 120 90" style="display:inline-block;vertical-align:middle;margin-right:8px;" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(60,40)">
+        <g>
+          <ellipse cx="0" cy="-12" rx="5" ry="10" fill="#c8b27a" opacity="0.7" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-12" rx="5" ry="10" fill="#c8b27a" opacity="0.7" transform="rotate(60)"/>
+          <ellipse cx="0" cy="-12" rx="5" ry="10" fill="#c8b27a" opacity="0.7" transform="rotate(120)"/>
+          <ellipse cx="0" cy="-12" rx="5" ry="10" fill="#c8b27a" opacity="0.7" transform="rotate(180)"/>
+          <ellipse cx="0" cy="-12" rx="5" ry="10" fill="#c8b27a" opacity="0.7" transform="rotate(240)"/>
+          <ellipse cx="0" cy="-12" rx="5" ry="10" fill="#c8b27a" opacity="0.7" transform="rotate(300)"/>
+          <circle cx="0" cy="0" r="4" fill="#c8b27a" opacity="0.8"/>
+        </g>
+      </g>
+    </svg>
+    Con tutto il cuore, <strong>Giulia De Romanis</strong>
+  </p>
+  <p style="margin-top: 16px; font-size: 13px; opacity: 0.4;">11 luglio 2026 · Cisterna di Latina</p>
 </footer>
 
 <!-- TOAST -->
-<div class="toast" id="toast">🎓 A presto! Ti aspettiamo il 11 luglio.</div>
+<div class="toast" id="toast">🌸 A presto! Ti aspettiamo l'11 luglio.</div>
 
 
 <script>
-  const reveals = document.querySelectorAll('.reveal');
+  /* ── CURSOR ── */
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = -100, my = -100, rx = -100, ry = -100;
+
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+  (function animCursor() {
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animCursor);
+  })();
+
+  /* ── HERO PARALLAX ── */
+  const glow = document.getElementById('heroGlow');
+  const hero = document.getElementById('hero');
+
+  document.addEventListener('mousemove', e => {
+    const { innerWidth: w, innerHeight: h } = window;
+    const dx = (e.clientX / w - 0.5) * 20;
+    const dy = (e.clientY / h - 0.5) * 10;
+    glow.style.transform = `translate(${dx}px, ${dy}px)`;
+  });
+
+  /* ── PARTICLES ── */
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+
+  function resizeCanvas() {
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * canvas.width;
+      this.y = canvas.height + 10;
+      this.size = Math.random() * 2 + 0.5;
+      this.speedY = -(Math.random() * 0.6 + 0.2);
+      this.speedX = (Math.random() - 0.5) * 0.3;
+      this.opacity = Math.random() * 0.5 + 0.1;
+      this.life = 0;
+      this.maxLife = Math.random() * 300 + 200;
+    }
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      this.life++;
+      if (this.life > this.maxLife) this.reset();
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,178,122,${this.opacity * (1 - this.life / this.maxLife)})`;
+      ctx.fill();
+    }
+  }
+
+  for (let i = 0; i < 60; i++) {
+    const p = new Particle();
+    p.y = Math.random() * canvas.height;
+    p.life = Math.random() * p.maxLife;
+    particles.push(p);
+  }
+
+  function animParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animParticles);
+  }
+  animParticles();
+
+  /* ── SCROLL PROGRESS ── */
+  const bar = document.getElementById('progressBar');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  /* ── REVEAL ON SCROLL ── */
+  const allReveal = document.querySelectorAll('.reveal, .reveal-left, .reveal-scale');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
-      }
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
     });
   }, { threshold: 0.12 });
-  reveals.forEach(el => observer.observe(el));
+  allReveal.forEach(el => observer.observe(el));
 
-  function handleRsvp() {
+  /* ── COUNTDOWN ── */
+  function updateCountdown() {
+    const target = new Date('2026-07-11T20:30:00');
+    const now = new Date();
+    const diff = target - now;
+
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '🎓';
+      document.getElementById('cd-hours').textContent = '0';
+      document.getElementById('cd-min').textContent = '0';
+      document.getElementById('cd-sec').textContent = '0';
+      return;
+    }
+
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+
+    document.getElementById('cd-days').textContent = String(days).padStart(2,'0');
+    document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+    document.getElementById('cd-min').textContent = String(mins).padStart(2,'0');
+    document.getElementById('cd-sec').textContent = String(secs).padStart(2,'0');
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* ── RIPPLE EFFECT ── */
+  document.querySelector('.btn-rsvp').addEventListener('click', function(e) {
+    const r = document.createElement('span');
+    r.classList.add('ripple');
+    const rect = this.getBoundingClientRect();
+    r.style.left = (e.clientX - rect.left - 20) + 'px';
+    r.style.top = (e.clientY - rect.top - 20) + 'px';
+    r.style.width = r.style.height = '40px';
+    this.appendChild(r);
+    setTimeout(() => r.remove(), 700);
+  });
+
+  /* ── FLOWER HOVER ROTATE ── */
+  document.querySelector('.ornament').addEventListener('mouseenter', function() {
+    const petals = this.querySelector('.flower-petals');
+    petals.style.transition = 'transform 2s linear';
+    petals.style.animation = 'none';
+    let angle = 0;
+    const spin = setInterval(() => {
+      angle += 3;
+      petals.style.transform = `rotate(${angle}deg)`;
+    }, 16);
+    this.addEventListener('mouseleave', () => { clearInterval(spin); }, { once: true });
+  });
+
+  /* ── RSVP ── */
+  function handleRsvp(e) {
     const nome = document.getElementById('nome').value.trim();
     if (!nome) {
       document.getElementById('nome').focus();
-      document.getElementById('nome').style.borderColor = '#d85a30';
-      setTimeout(() => document.getElementById('nome').style.borderColor = '', 1500);
+      document.getElementById('nome').style.borderColor = '#c0392b';
+      document.getElementById('nome').style.animation = 'none';
+      setTimeout(() => { document.getElementById('nome').style.borderColor = ''; }, 1500);
       return;
     }
     const toast = document.getElementById('toast');
