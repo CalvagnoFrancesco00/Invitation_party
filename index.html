@@ -93,6 +93,23 @@
     transition: transform 0.8s ease;
   }
 
+    /* ── BOMBONIERA MASCOT ── */
+  .bomboniera-float {
+    width: 160px;
+    height: 160px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.2s forwards, floatBob 3s ease-in-out 1.5s infinite;
+    filter: drop-shadow(0 8px 24px rgba(127, 119, 216, 0.5));
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+
+  .bomboniera-float:hover {
+    transform: scale(1.12) rotate(-5deg);
+    filter: drop-shadow(0 12px 36px rgba(91, 154, 236, 0.8));
+  }
+
   .ornament {
     width: 120px;
     margin-bottom: 28px;
@@ -699,7 +716,7 @@
   <div class="hero-glow" id="heroGlow"></div>
 
   <!-- FIORE SVG -->
- <svg class="ornament" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+ <!-- <svg class="ornament" viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
   <g transform="translate(60,40)">
     <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0;transform:rotate(0deg)"/>
     <ellipse cx="0" cy="-16" rx="7" ry="13" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0;transform:rotate(45deg)"/>
@@ -717,9 +734,12 @@
   <circle cx="60" cy="80" r="3" fill="none" stroke="#c8b27a" stroke-width="0.5" opacity="0.6"/>
   <circle cx="40" cy="80" r="1.5" fill="#c8b27a" opacity="0.4"/>
   <circle cx="80" cy="80" r="1.5" fill="#c8b27a" opacity="0.4"/>
-</svg>
+</svg> -->
 
   <p class="hero-sub">Con immensa gioia vi annuncio</p>
+
+     <!-- MASCOT BOMBONIERA nell'hero -->
+  <img class="bomboniera-float" src="image/bomboniera_nobg.png">
 
   <h1 class="hero-name">
     <em>Giulia</em><br>De Romanis
