@@ -29,11 +29,12 @@
     color: var(--text);
     min-height: 100vh;
     overflow-x: hidden;
-    cursor: none;
+    /* cursor: none; */
+    cursor: auto;
   }
 
   /* ── CUSTOM CURSOR ── */
-  .cursor {
+  /* .cursor {
     position: fixed;
     width: 8px;
     height: 8px;
@@ -59,7 +60,7 @@
   }
 
   body:has(a:hover) .cursor, body:has(button:hover) .cursor { width: 14px; height: 14px; }
-  body:has(a:hover) .cursor-ring, body:has(button:hover) .cursor-ring { width: 56px; height: 56px; border-color: rgba(200,178,122,0.9); }
+  body:has(a:hover) .cursor-ring, body:has(button:hover) .cursor-ring { width: 56px; height: 56px; border-color: rgba(200,178,122,0.9); } */
 
   /* ── HERO ── */
   .hero {
@@ -137,7 +138,7 @@
     transition: letter-spacing 0.4s ease;
   }
 
-  .hero-name:hover em { letter-spacing: 4px; }
+  /* .hero-name:hover em { letter-spacing: 4px; } */
 
   .hero-degree {
     font-family: 'Cormorant Garamond', serif;
@@ -567,7 +568,8 @@
     font-size: 13px; font-weight: 500;
     letter-spacing: 3px; text-transform: uppercase;
     color: var(--white);
-    cursor: none;
+    /* cursor: none; */
+    cursor: pointer;
     transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     margin-top: 6px; position: relative; overflow: hidden;
   }
@@ -688,8 +690,8 @@
 <div class="progress-bar" id="progressBar"></div>
 
 <!-- CUSTOM CURSOR -->
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<!-- <div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div> -->
 
 <!-- HERO -->
 <section class="hero" id="hero">
@@ -730,18 +732,18 @@
   <div class="divider-line">
     <span></span>
     <svg class="divider-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g class="flower-petals" transform="translate(11,11)">
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(0)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(45)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(90)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(135)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(180)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(225)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(270)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" transform="rotate(315)"/>
-        <circle cx="0" cy="0" r="3" fill="#c8b27a"/>
-      </g>
-    </svg>
+    <g transform="translate(11,11)">
+      <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(0deg)"/>
+      <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(45deg)"/>
+      <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(90deg)"/>
+      <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(135deg)"/>
+      <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(180deg)"/>
+      <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(225deg)"/>
+      <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(270deg)"/>
+      <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(315deg)"/>
+      <circle cx="0" cy="0" r="3" fill="#c8b27a"/>
+    </g>
+</svg>
     <span></span>
   </div>
 
@@ -888,21 +890,21 @@
 
 <script>
   /* ── CURSOR ── */
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = -100, my = -100, rx = -100, ry = -100;
+  // const cursor = document.getElementById('cursor');
+  // const ring = document.getElementById('cursorRing');
+  // let mx = -100, my = -100, rx = -100, ry = -100;
 
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  // document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
-  (function animCursor() {
-    cursor.style.left = mx + 'px';
-    cursor.style.top = my + 'px';
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(animCursor);
-  })();
+  // (function animCursor() {
+  //   cursor.style.left = mx + 'px';
+  //   cursor.style.top = my + 'px';
+  //   rx += (mx - rx) * 0.12;
+  //   ry += (my - ry) * 0.12;
+  //   ring.style.left = rx + 'px';
+  //   ring.style.top = ry + 'px';
+  //   requestAnimationFrame(animCursor);
+  // })();
 
   /* ── HERO PARALLAX ── */
   const glow = document.getElementById('heroGlow');
