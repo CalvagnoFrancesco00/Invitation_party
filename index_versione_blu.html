@@ -5,29 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Invito alla Laurea – Giulia De Romanis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Nunito:wght@300;400;500;600&family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --gold: #c8956e;
-    --gold-light: #e0b898;
-    --gold-pale: #fdf0ec;
-    --navy: #2c1522;
-    --navy-mid: #5c2d45;
-    --navy-light: #8a4060;
-    --pink: #e8a0b8;
-    --pink-soft: #f5d4de;
-    --text: #2c1522;
-    --subtle: #9a6078;
-    --white: #fff8f5;
+    --gold: #c8b27a;
+    --gold-light: #e0cfaa;
+    --gold-pale: #eef1f8;
+    --navy: #0d1b3e;
+    --navy-mid: #1e3a6e;
+    --navy-light: #2a4f8a;
+    --text: #0d1b3e;
+    --subtle: #4a6fa5;
+    --white: #f8faff;
   }
 
   html { scroll-behavior: smooth; }
 
   body {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Jost', sans-serif;
     background: var(--white);
     color: var(--text);
     min-height: 100vh;
@@ -45,7 +42,7 @@
     justify-content: center;
     text-align: center;
     padding: 60px 32px 80px;
-    background: linear-gradient(160deg, #2c1522 0%, #4a1e35 50%, #2c1522 100%);
+    background: var(--navy);
     overflow: hidden;
   }
 
@@ -67,9 +64,8 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,160,184,0.15) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 40% at 20% 100%, rgba(92,45,69,0.5) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 40% at 80% 50%, rgba(200,149,110,0.08) 0%, transparent 60%);
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(200,178,122,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 20% 100%, rgba(30,58,110,0.4) 0%, transparent 60%);
     pointer-events: none;
     transition: transform 0.8s ease;
     z-index: 1;
@@ -83,12 +79,12 @@
   }
 
   .bomboniera-float {
-    width: 200px;
-    height: 200px;
+    width: 160px;
+    height: 160px;
     object-fit: contain;
     opacity: 0;
     animation: fadeUp 1s ease 0.2s forwards, floatBob 3s ease-in-out 1.5s infinite;
-    filter: drop-shadow(0 8px 28px rgba(232,160,184,0.55));
+    filter: drop-shadow(0 8px 24px rgba(127, 119, 216, 0.5));
     display: block;
   }
 
@@ -109,12 +105,12 @@
   }
 
   .hero-sub {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Jost', sans-serif;
     font-weight: 300;
     font-size: 11px;
     letter-spacing: 5px;
     text-transform: uppercase;
-    color: var(--pink);
+    color: var(--gold);
     margin-bottom: 20px;
     opacity: 0;
     animation: fadeUp 1s ease 0.4s forwards;
@@ -123,8 +119,8 @@
   }
 
   .hero-name {
-    font-family: 'Playfair Display', serif;
-    font-weight: 400;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
     font-size: clamp(52px, 14vw, 76px);
     color: var(--white);
     line-height: 1.05;
@@ -137,17 +133,18 @@
 
   .hero-name em {
     font-style: italic;
-    color: var(--pink);
+    color: var(--gold-light);
     display: inline-block;
     transition: letter-spacing 0.4s ease;
   }
 
   .hero-degree {
-    font-family: 'Dancing Script', cursive;
-    font-size: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
     color: var(--gold-light);
     margin-top: 16px;
-    font-weight: 500;
+    font-weight: 300;
     opacity: 0;
     animation: fadeUp 1s ease 0.8s forwards;
     position: relative;
@@ -185,9 +182,9 @@
   }
 
   .hero-invite {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 17px;
-    color: rgba(255,240,245,0.78);
+    color: rgba(248,250,255,0.72);
     line-height: 1.7;
     max-width: 300px;
     opacity: 0;
@@ -214,14 +211,14 @@
     font-size: 9px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    color: var(--pink);
-    opacity: 0.8;
+    color: var(--gold);
+    opacity: 0.7;
   }
 
   .scroll-cue .arrow {
     width: 1px;
     height: 32px;
-    background: linear-gradient(to bottom, var(--pink), transparent);
+    background: linear-gradient(to bottom, var(--gold), transparent);
     animation: arrowDrop 1.5s ease-in-out infinite;
   }
 
@@ -236,7 +233,7 @@
     position: fixed;
     top: 0; left: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--navy-mid), var(--pink), var(--gold-light));
+    background: linear-gradient(90deg, var(--navy-mid), var(--gold), var(--gold-light));
     width: 0%;
     z-index: 1000;
     transition: width 0.1s linear;
@@ -281,9 +278,9 @@
   .date-card:hover { transform: translateY(-6px); box-shadow: 0 24px 60px rgba(13,27,62,0.12); }
 
   .date-day {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 96px;
-    font-weight: 400;
+    font-weight: 300;
     line-height: 1;
     color: var(--gold);
     letter-spacing: -4px;
@@ -293,9 +290,9 @@
   .date-card:hover .date-day { letter-spacing: 0px; color: var(--navy-mid); }
 
   .date-month-year {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 22px;
-    font-weight: 400;
+    font-weight: 300;
     color: var(--navy-mid);
     letter-spacing: 2px;
     margin-top: 4px;
@@ -310,15 +307,14 @@
     padding: 10px 24px;
     background: var(--navy);
     border-radius: 100px;
-    font-family: 'Nunito', sans-serif;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 1px;
     color: var(--white);
     transition: background 0.3s ease, transform 0.2s ease;
   }
 
-  .date-card:hover .date-time { background: var(--navy-mid); transform: scale(1.05); }
+  .date-card:hover .date-time { background: var(--gold); transform: scale(1.05); }
 
   /* ── INFO BLOCKS ── */
   .info-grid { display: flex; flex-direction: column; gap: 16px; }
@@ -365,11 +361,11 @@
 
   .info-text h3 {
     font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--subtle); font-weight: 600; margin-bottom: 6px;
+    color: var(--subtle); font-weight: 400; margin-bottom: 6px;
   }
 
   .info-text p, .info-text a {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 18px; color: var(--text); line-height: 1.4; font-weight: 400;
   }
 
@@ -380,7 +376,7 @@
   /* ── QUOTE ── */
   .quote-section {
     padding: 80px 28px;
-    background: linear-gradient(135deg, #2c1522 0%, #4a1e35 100%);
+    background: var(--navy);
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -401,7 +397,7 @@
   }
 
   .quote-text {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: clamp(22px, 6vw, 30px);
     color: var(--white);
@@ -416,23 +412,22 @@
   .quote-section:hover .quote-bg-text { opacity: 0.07; transform: translate(-50%, -52%) scale(1.02); }
 
   .quote-mark {
-    font-family: 'Playfair Display', serif;
-    font-size: 80px; line-height: 0.5; color: var(--pink); opacity: 0.5;
+    font-size: 80px; line-height: 0.5; color: var(--gold); opacity: 0.4;
     display: block; margin-bottom: 16px;
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
 
-  .quote-section:hover .quote-mark { opacity: 0.8; transform: scale(1.1); }
+  .quote-section:hover .quote-mark { opacity: 0.7; transform: scale(1.1); }
 
   .quote-author {
     font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
-    color: var(--pink); margin-top: 24px; font-weight: 300; position: relative;
+    color: var(--gold); margin-top: 24px; font-weight: 300; position: relative;
   }
 
   /* ── COUNTDOWN ── */
   .countdown-section {
     padding: 60px 28px;
-    background: linear-gradient(135deg, var(--gold-pale) 0%, var(--pink-soft) 100%);
+    background: var(--gold-pale);
     text-align: center;
   }
 
@@ -467,10 +462,10 @@
   .count-box:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(13,27,62,0.25); }
 
   .count-num {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 48px;
-    font-weight: 400;
-    color: var(--gold-light);
+    font-weight: 300;
+    color: var(--gold);
     line-height: 1;
     display: block;
     transition: transform 0.3s ease;
@@ -507,8 +502,8 @@
   }
 
   .rsvp-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 40px; font-weight: 400; color: var(--text); margin-bottom: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px; font-weight: 300; color: var(--text); margin-bottom: 12px;
   }
 
   .rsvp-sub {
@@ -523,10 +518,10 @@
   .input-wrap input {
     width: 100%;
     padding: 16px 20px;
-    border: 1px solid #e8c8d4;
+    border: 1px solid #d4ddf0;
     border-radius: 12px;
     background: var(--white);
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Jost', sans-serif;
     font-size: 15px;
     color: var(--text);
     outline: none;
@@ -536,17 +531,17 @@
 
   .input-wrap input:focus {
     border-color: var(--navy-mid);
-    box-shadow: 0 0 0 3px rgba(232,160,184,0.15);
+    box-shadow: 0 0 0 3px rgba(13,27,62,0.08);
     transform: translateY(-2px);
   }
 
-  .input-wrap input::placeholder { color: #c4a0b0; }
+  .input-wrap input::placeholder { color: #a0b0c8; }
 
   .input-wrap label {
     position: absolute;
     top: 50%; left: 20px;
     transform: translateY(-50%);
-    font-size: 14px; color: #c4a0b0;
+    font-size: 14px; color: #a0b0c8;
     pointer-events: none;
     transition: all 0.25s ease;
     background: var(--white);
@@ -560,10 +555,10 @@
 
   .btn-rsvp {
     width: 100%; padding: 18px;
-    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    background: var(--navy);
     border: none; border-radius: 12px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 13px; font-weight: 600;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px; font-weight: 500;
     letter-spacing: 3px; text-transform: uppercase;
     color: var(--white);
     cursor: pointer;
@@ -575,13 +570,13 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, transparent 40%, rgba(232,160,184,0.25) 100%);
+    background: linear-gradient(135deg, transparent 40%, rgba(200,178,122,0.2) 100%);
     transform: translateX(-100%);
     transition: transform 0.5s ease;
   }
 
   .btn-rsvp:hover::before { transform: translateX(0); }
-  .btn-rsvp:hover { background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-light) 100%); box-shadow: 0 12px 40px rgba(44,21,34,0.35); transform: translateY(-3px); }
+  .btn-rsvp:hover { background: var(--navy-mid); box-shadow: 0 12px 40px rgba(13,27,62,0.3); transform: translateY(-3px); }
   .btn-rsvp:active { transform: scale(0.98) translateY(0); }
 
   /* ── RIPPLE ── */
@@ -598,7 +593,7 @@
 
   /* ── FOOTER ── */
   footer {
-    background: linear-gradient(135deg, #2c1522 0%, #4a1e35 100%);
+    background: var(--navy);
     padding: 48px 28px;
     text-align: center;
     position: relative;
@@ -610,13 +605,13 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--pink), var(--gold), transparent);
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
   }
 
   footer p {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-size: 15px;
-    color: rgba(255,240,245,0.5);
+    color: rgba(248,250,255,0.45);
     line-height: 1.7;
   }
 
@@ -706,15 +701,15 @@
     <span></span>
     <svg class="divider-svg" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g transform="translate(11,11)">
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#e8a0b8" opacity="0.9" style="transform-origin:0 0; transform:rotate(0deg)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#e8a0b8" opacity="0.9" style="transform-origin:0 0; transform:rotate(45deg)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#e8a0b8" opacity="0.9" style="transform-origin:0 0; transform:rotate(90deg)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#e8a0b8" opacity="0.9" style="transform-origin:0 0; transform:rotate(135deg)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#e8a0b8" opacity="0.9" style="transform-origin:0 0; transform:rotate(180deg)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#e8a0b8" opacity="0.9" style="transform-origin:0 0; transform:rotate(225deg)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#e8a0b8" opacity="0.9" style="transform-origin:0 0; transform:rotate(270deg)"/>
-        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#e8a0b8" opacity="0.9" style="transform-origin:0 0; transform:rotate(315deg)"/>
-        <circle cx="0" cy="0" r="3" fill="#c8956e"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(0deg)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(45deg)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(90deg)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(135deg)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(180deg)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(225deg)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(270deg)"/>
+        <ellipse cx="0" cy="-5.5" rx="2.5" ry="4.5" fill="#c8b27a" opacity="0.85" style="transform-origin:0 0; transform:rotate(315deg)"/>
+        <circle cx="0" cy="0" r="3" fill="#c8b27a"/>
       </g>
     </svg>
     <span></span>
@@ -817,7 +812,7 @@
 
 <!-- RSVP FORM -->
 <section class="rsvp-section">
-  <h2 class="rsvp-title reveal">Conferma<br><em style="font-family: 'Dancing Script'; font-style: normal; font-weight: 500;">la tua presenza</em></h2>
+  <h2 class="rsvp-title reveal">Conferma<br><em style="font-family: 'Cormorant Garamond'; font-style: italic; font-weight: 300;">la tua presenza</em></h2>
   <p class="rsvp-sub reveal">Facci sapere se parteciperai entro il 7 giugno. Non vedo l'ora di festeggiare con te!</p>
   <div class="rsvp-form reveal">
     <div class="input-wrap">
@@ -890,7 +885,7 @@
     draw() {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(232,160,184,${this.opacity * (1 - this.life / this.maxLife)})`;
+      ctx.fillStyle = `rgba(200,178,122,${this.opacity * (1 - this.life / this.maxLife)})`;
       ctx.fill();
     }
   }
@@ -929,10 +924,10 @@
   /* Palette oro / champagne / bianco freddo */
   const GOLD_PALETTE = [
     'rgba(255,215,80,',   // oro brillante
-    'rgba(200,149,110,',  // oro caldo
-    'rgba(232,160,184,',  // rosa chiaro
-    'rgba(245,212,222,',  // rosa pallido
+    'rgba(200,178,122,',  // oro caldo (--gold)
+    'rgba(224,207,170,',  // oro chiaro
     'rgba(255,245,180,',  // paglierino
+    'rgba(255,255,220,',  // bianco caldo
     'rgba(255,230,100,',  // oro vivace
   ];
 
