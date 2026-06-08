@@ -586,6 +586,14 @@
   .btn-rsvp:hover::before { transform: translateX(0); }
   .btn-rsvp:hover { background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-light) 100%); box-shadow: 0 12px 40px rgba(44,21,34,0.35); transform: translateY(-3px); }
   .btn-rsvp:active { transform: scale(0.98) translateY(0); }
+  .btn-decline {
+    display: block; width: 100%; background: none; border: none;
+    color: var(--subtle); font-family: 'Nunito', sans-serif; font-size: 13px;
+    cursor: pointer; margin-top: 12px; padding: 6px;
+    text-decoration: underline; text-underline-offset: 3px;
+    transition: color 0.2s ease;
+  }
+  .btn-decline:hover { color: var(--navy); }
 
   /* ── RIPPLE ── */
   .ripple {
@@ -651,6 +659,26 @@
   }
 
   @keyframes fadeIn { to { opacity: 1; } }
+  @keyframes barFill {
+    0%   { width: 0%;   opacity: 1; }
+    80%  { width: 100%; opacity: 1; }
+    100% { width: 100%; opacity: 0; }
+  }
+  @keyframes bombMove {
+    0%   { left: 0;                        transform: translateY(-50%) rotate(-8deg); }
+    50%  { left: calc(100% - 44px);        transform: translateY(-50%) rotate(8deg);  }
+    100% { left: 0;                        transform: translateY(-50%) rotate(-8deg); }
+  }
+  @keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+  }
+  @keyframes popIn {
+    from { transform: scale(0) rotate(-20deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg);  opacity: 1; }
+  }
 
   /* ── REVEAL ── */
   .reveal {
@@ -823,8 +851,20 @@
   <h2 class="rsvp-title reveal">Conferma<br><em style="font-family: 'Dancing Script'; font-style: normal; font-weight: 500;">la tua presenza</em></h2>
   <p class="rsvp-sub reveal">Facci sapere se parteciperai entro il 7 giugno. Non vedo l'ora di festeggiare con te!</p>
 
-  <div id="rsvp-loading" class="rsvp-form reveal" style="text-align:center; padding:20px; color:var(--subtle); font-size:15px;">
-    Caricamento...
+  <div id="rsvp-loading" class="rsvp-form reveal" style="text-align:center; padding:32px 0;">
+    <div style="position:relative; width:100%; max-width:280px; margin:0 auto 16px;">
+      <!-- Track -->
+      <div style="height:3px; background:var(--pink-soft); border-radius:99px; overflow:hidden;">
+        <div style="height:100%; background:linear-gradient(90deg,var(--gold-light),var(--gold)); border-radius:99px; animation:barFill 1.6s ease-in-out infinite;"></div>
+      </div>
+      <!-- Bomboniera che scorre sopra la barra -->
+      <img src="image/bomboniera_nobg.png"
+           style="position:absolute; top:50%; width:44px; height:44px; object-fit:contain;
+                  transform:translateY(-50%); left:0;
+                  animation:bombMove 1.6s ease-in-out infinite;
+                  filter:drop-shadow(0 2px 8px rgba(200,149,110,0.4));">
+    </div>
+    <p style="font-family:'Dancing Script',cursive; font-size:20px; color:var(--subtle);">Un momento...</p>
   </div>
 
   <div id="rsvp-form-wrap" class="rsvp-form reveal" style="display:none;">
@@ -836,12 +876,48 @@
       <label>Quante persone siete in tutto?</label>
     </div>
     <button class="btn-rsvp" onclick="handleRsvp(event)">Confermo la presenza</button>
+    <button class="btn-decline" onclick="handleDecline(event)">Non posso venire</button>
   </div>
 
-  <div id="rsvp-confirmed" style="display:none; text-align:center; padding:32px 0;">
-    <div style="font-size:48px; margin-bottom:12px;">&#127800;</div>
-    <p style="font-family:'Playfair Display',serif; font-size:22px; color:var(--navy);">Hai già confermato la tua presenza!</p>
-    <p style="color:var(--subtle); margin-top:10px; font-size:15px;">Non vediamo l'ora di festeggiare insieme.</p>
+  <div id="rsvp-confirmed" style="display:none; text-align:center; padding:40px 0;">
+    <div style="position:relative; width:88px; height:88px; margin:0 auto 28px;">
+      <svg viewBox="0 0 88 88" style="width:88px;height:88px;">
+        <circle cx="44" cy="44" r="40" fill="none" stroke="var(--gold-light)" stroke-width="1.5"
+                style="stroke-dasharray:251;stroke-dashoffset:251;animation:drawCircle 0.5s cubic-bezier(0.4,0,0.2,1) 0s forwards;"/>
+        <circle cx="44" cy="44" r="40" fill="rgba(200,149,110,0.07)"/>
+        <path d="M26 44 L38 56 L63 31" fill="none" stroke="var(--gold)" stroke-width="3.5"
+              stroke-linecap="round" stroke-linejoin="round"
+              style="stroke-dasharray:65;stroke-dashoffset:65;animation:drawCheck 0.3s cubic-bezier(0.4,0,0.2,1) 0.45s forwards;"/>
+      </svg>
+      <div style="position:absolute;top:-6px;right:-6px;font-size:20px;animation:popIn 0.3s ease 0.7s both;"></div>
+      <div style="position:absolute;bottom:-4px;left:-8px;font-size:16px;animation:popIn 0.3s ease 0.8s both;"></div>
+    </div>
+
+    <div style="font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);font-family:'Nunito',sans-serif;margin-bottom:14px;animation:fadeUp 0.4s ease 0.6s both;">
+      Presenza confermata
+    </div>
+
+    <h3 style="font-family:'Playfair Display',serif;font-size:26px;color:var(--navy);line-height:1.3;margin-bottom:16px;animation:fadeUp 0.4s ease 0.7s both;">
+      Non vediamo l'ora<br><em style="font-style:italic;color:var(--pink);">di festeggiare con te!</em>
+    </h3>
+
+    <div style="width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 16px;animation:fadeUp 0.4s ease 0.8s both;"></div>
+
+    <p style="color:var(--subtle);font-size:14px;line-height:1.8;animation:fadeUp 0.4s ease 0.9s both;">
+      Ti aspettiamo l'<strong style="color:var(--navy);">11 luglio 2026</strong><br>
+    </p>
+    <button class="btn-decline" style="margin-top:24px;font-size:13px;padding:10px 24px;" onclick="handleUndo('confirmed')">Annulla risposta</button>
+  </div>
+
+  <div id="rsvp-declined" style="display:none; text-align:center; padding:40px 0;">
+    <div style="font-size:44px; margin-bottom:20px;">🥀</div>
+    <div style="font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--subtle);font-family:'Nunito',sans-serif;margin-bottom:14px;">Risposta ricevuta<br>(non confermato)</div>
+    <h3 style="font-family:'Playfair Display',serif;font-size:26px;color:var(--navy);line-height:1.3;margin-bottom:16px;">
+      Peccato, <em style="font-style:italic;color:var(--pink);" id="rsvp-declined-nome"></em>!
+    </h3>
+    <div style="width:50px;height:1px;background:linear-gradient(90deg,transparent,var(--subtle),transparent);margin:0 auto 16px;"></div>
+    <p style="color:var(--subtle);font-size:14px;line-height:1.8;">Grazie per averci fatto sapere ♥</p>
+    <button class="btn-decline" style="margin-top:24px;font-size:13px;padding:10px 24px;" onclick="handleUndo('declined')">Annulla risposta</button>
   </div>
 
   <div id="rsvp-invalid" style="display:none; text-align:center; padding:32px 0;">
@@ -1152,7 +1228,8 @@
   });
 
   /* ── RSVP con token ── */
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwOuz8ZmveHzicTZlTF0D6WdqwVIVkBKwckBe_HaUS39OSen1U4fPjXdBY3I2lUIxpKTw/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNLKv7LAXGJ1BEn7nGx42lWNFYk7qPtkmpaSxkqnyYv1d9S8JpO-aoVDHVf_mJs1Kz/exec';
+  const TOKEN_SINGOLI = ['32JF3W','AMWG4G','B5YGTE','PMT7VG','7FN8N2','QRBR8P','V7BTGD','T5DQ7W','TC8NDX','7G5FK4','Z9BZE7','72EEVA'];
   let rsvpToken = null;
 
   function initRsvp() {
@@ -1168,8 +1245,16 @@
       .then(data => {
         document.getElementById('rsvp-loading').style.display = 'none';
         if (!data.valido) { document.getElementById('rsvp-invalid').style.display = 'block'; return; }
-        if (data.confermato) { document.getElementById('rsvp-confirmed').style.display = 'block'; return; }
         document.getElementById('rsvp-nome-display').textContent = data.nome;
+        const risposta = data.risposta !== undefined ? data.risposta : (data.confermato ? 'SI' : '');
+        if (risposta === 'SI') { document.getElementById('rsvp-confirmed').style.display = 'block'; return; }
+        if (risposta === 'NO') {
+          document.getElementById('rsvp-declined-nome').textContent = data.nome;
+          document.getElementById('rsvp-declined').style.display = 'block'; return;
+        }
+        if (TOKEN_SINGOLI.includes(token)) {
+          document.getElementById('persone').closest('.input-wrap').style.display = 'none';
+        }
         document.getElementById('rsvp-form-wrap').style.display = 'block';
       })
       .catch(() => {
@@ -1180,22 +1265,58 @@
 
   function handleRsvp(e) {
     const persone = document.getElementById('persone').value.trim();
-    if (!persone) {
+    if (!persone && !TOKEN_SINGOLI.includes(rsvpToken)) {
       document.getElementById('persone').focus();
       document.getElementById('persone').style.borderColor = '#c0392b';
       setTimeout(() => { document.getElementById('persone').style.borderColor = ''; }, 1500);
       return;
     }
-    fetch(SCRIPT_URL + '?action=confirm&token=' + encodeURIComponent(rsvpToken) + '&persone=' + encodeURIComponent(persone))
+    document.getElementById('rsvp-form-wrap').style.display = 'none';
+    document.getElementById('rsvp-loading').style.display = 'block';
+    fetch(SCRIPT_URL + '?action=confirm&token=' + encodeURIComponent(rsvpToken) + '&persone=' + encodeURIComponent(persone || '1'))
       .then(r => r.json())
       .then(data => {
-        if (data.success || data.message === 'già confermato') {
-          document.getElementById('rsvp-form-wrap').style.display = 'none';
+        document.getElementById('rsvp-loading').style.display = 'none';
+        if (data.success || data.message === 'già risposto' || data.message === 'già confermato') {
           document.getElementById('rsvp-confirmed').style.display = 'block';
           const toast = document.getElementById('toast');
           toast.classList.add('show');
           setTimeout(() => toast.classList.remove('show'), 3500);
         }
+      });
+  }
+
+  function handleDecline(e) {
+    const nome = document.getElementById('rsvp-nome-display').textContent;
+    document.getElementById('rsvp-form-wrap').style.display = 'none';
+    document.getElementById('rsvp-loading').style.display = 'block';
+    fetch(SCRIPT_URL + '?action=decline&token=' + encodeURIComponent(rsvpToken))
+      .then(r => r.json())
+      .then(() => {
+        document.getElementById('rsvp-loading').style.display = 'none';
+        document.getElementById('rsvp-declined-nome').textContent = nome;
+        document.getElementById('rsvp-declined').style.display = 'block';
+      });
+  }
+
+  function handleUndo(from) {
+    document.getElementById(from === 'confirmed' ? 'rsvp-confirmed' : 'rsvp-declined').style.display = 'none';
+    document.getElementById('rsvp-loading').style.display = 'block';
+    fetch(SCRIPT_URL + '?action=undo&token=' + encodeURIComponent(rsvpToken))
+      .then(r => r.json())
+      .then(() => {
+        document.getElementById('rsvp-loading').style.display = 'none';
+        document.getElementById('persone').value = '';
+        if (TOKEN_SINGOLI.includes(rsvpToken)) {
+          document.getElementById('persone').closest('.input-wrap').style.display = 'none';
+        } else {
+          document.getElementById('persone').closest('.input-wrap').style.display = 'block';
+        }
+        document.getElementById('rsvp-form-wrap').style.display = 'block';
+      })
+      .catch(() => {
+        document.getElementById('rsvp-loading').style.display = 'none';
+        document.getElementById(from === 'confirmed' ? 'rsvp-confirmed' : 'rsvp-declined').style.display = 'block';
       });
   }
 
