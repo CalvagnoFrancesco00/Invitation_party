@@ -534,7 +534,7 @@
 
   .rsvp-form { display: flex; flex-direction: column; gap: 14px; }
 
-  .input-wrap { position: relative; }
+  .input-wrap { position: relative; width: 100%; }
 
   .input-wrap input {
     width: 100%;
@@ -621,32 +621,19 @@
   .rsvp-panels-container {
     position: relative;
     overflow: hidden;
-    min-height: 660px;
+    background: #fff;
   }
 
   .rsvp-panel {
-    position: absolute;
-    inset: 0;
-    padding: 36px 28px;
     display: none;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     text-align: center;
-    overflow-y: auto;
+    padding: 36px 28px;
+    width: 100%;
   }
 
   .rsvp-panel.active { display: flex; }
-
-  @keyframes rsvpInRight  { from { transform: translateX(55%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-  @keyframes rsvpInLeft   { from { transform: translateX(-55%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-  @keyframes rsvpOutLeft  { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-55%); opacity: 0; } }
-  @keyframes rsvpOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(55%); opacity: 0; } }
-
-  .rsvp-panel.anim-in-right  { display: flex !important; animation: rsvpInRight  0.38s cubic-bezier(0.4,0,0.2,1) forwards; }
-  .rsvp-panel.anim-in-left   { display: flex !important; animation: rsvpInLeft   0.38s cubic-bezier(0.4,0,0.2,1) forwards; }
-  .rsvp-panel.anim-out-left  { display: flex !important; animation: rsvpOutLeft  0.38s cubic-bezier(0.4,0,0.2,1) forwards; }
-  .rsvp-panel.anim-out-right { display: flex !important; animation: rsvpOutRight 0.38s cubic-bezier(0.4,0,0.2,1) forwards; }
   .rsvp-card::before {
     content: '';
     position: absolute;
@@ -659,6 +646,7 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    width: 100%;
     margin-bottom: 28px;
     padding-bottom: 24px;
     border-bottom: 1px solid var(--pink-soft);
@@ -1410,22 +1398,47 @@
   /* ── RSVP panel transitions ── */
   const RSVP_PANELS = ['rsvp-loading','rsvp-form-wrap','rsvp-confirmed','rsvp-declined','rsvp-invalid'];
   let rsvpBusy = false;
+  const SLIDE_DUR = 380;
 
   function showPanel(nextId, dir) {
+    const container = document.querySelector('.rsvp-panels-container');
     const currentEl = RSVP_PANELS.map(id => document.getElementById(id)).find(el => el.classList.contains('active'));
     const nextEl = document.getElementById(nextId);
+
     if (!currentEl || currentEl === nextEl) { nextEl.classList.add('active'); return; }
     if (rsvpBusy) { currentEl.classList.remove('active'); nextEl.classList.add('active'); return; }
     rsvpBusy = true;
-    const outCls = dir === 'left' ? 'anim-out-right' : 'anim-out-left';
-    const inCls  = dir === 'left' ? 'anim-in-left'  : 'anim-in-right';
-    currentEl.classList.add(outCls);
-    nextEl.classList.add('active', inCls);
+
+    const slideOut = dir === 'right' ? '-100%' : '100%';
+    const slideIn  = dir === 'right' ? '100%'  : '-100%';
+    const ease = `${SLIDE_DUR}ms cubic-bezier(0.4,0,0.2,1)`;
+
+    /* freeze container height to avoid collapse during transition */
+    container.style.height = currentEl.offsetHeight + 'px';
+
+    /* position next panel off-screen without removing current from flow */
+    nextEl.style.cssText = `display:flex; position:absolute; inset:0; padding:36px 28px;
+      flex-direction:column; align-items:center; text-align:center;
+      transform:translateX(${slideIn}); opacity:0;`;
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const tr = `transform ${ease}, opacity ${ease}`;
+      currentEl.style.transition = tr;
+      nextEl.style.transition    = tr;
+      currentEl.style.transform  = `translateX(${slideOut})`;
+      currentEl.style.opacity    = '0';
+      nextEl.style.transform     = 'translateX(0)';
+      nextEl.style.opacity       = '1';
+    }));
+
     setTimeout(() => {
-      currentEl.classList.remove('active', outCls);
-      nextEl.classList.remove(inCls);
+      currentEl.classList.remove('active');
+      currentEl.style.cssText = '';
+      nextEl.classList.add('active');
+      nextEl.style.cssText = '';
+      container.style.height = '';
       rsvpBusy = false;
-    }, 380);
+    }, SLIDE_DUR + 20);
   }
 
   /* ── RSVP con token ── */
