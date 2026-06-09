@@ -506,7 +506,6 @@
   /* ── RSVP ── */
   .rsvp-section {
     padding: 72px 28px;
-    height: 800px;
     text-align: center;
     background: var(--white);
     position: relative;
@@ -617,12 +616,19 @@
     box-shadow: 0 8px 48px rgba(44,21,34,0.09), 0 1px 0 rgba(200,149,110,0.15);
     position: relative;
     overflow: hidden;
+    transition: background 0.35s, box-shadow 0.35s, border-radius 0.35s;
   }
+  .rsvp-card.is-loading {
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  .rsvp-card.is-loading::before { display: none; }
 
   .rsvp-panels-container {
     position: relative;
     overflow: hidden;
-    background: #fff;
+    background: transparent;
   }
 
   .rsvp-panel {
@@ -970,7 +976,7 @@
       <div class="info-text">
         <h3></h3>
         <a href="#" onclick="openMap(41.9087878, 12.4633752, 'Unimarconi sede esame', 'https://www.google.com/maps/place/Unimarconi+sede+esame/@41.9087918,12.4608003,17z/data=!3m1!4b1!4m6!3m5!1s0x132f605fa3b6c7af:0x3cbb63bd17835907!8m2!3d41.9087878!4d12.4633752!16s%2Fg%2F11c8057h5m?entry=ttu&g_ep=EgoyMDI2MDQyOS4wIKXMDSoASAFQAw%3D%3D'); return false;">Università degli Studi<br>Unimarconi</a>
-        <small>06/07/2026 · Ore 15:00 · Via Paolo Emilio, 29 – Roma</small>
+        <small>10/07/2026 · Ore 16:00 · Via Paolo Emilio, 29 – Roma</small>
       </div>
     </div>
   </div>
@@ -997,22 +1003,23 @@
     <h2 id="rsvp-title" class="rsvp-title reveal">Conferma<br><em style="font-family:'Dancing Script';font-style:normal;font-weight:500;">la tua presenza</em></h2>
     <p id="rsvp-sub" class="rsvp-sub reveal">Facci sapere se parteciperai. Non vedo l'ora di festeggiare con te!</p>
 
-    <!-- LOADING (fuori dal container slide, nessun overflow:hidden) -->
-    <div id="rsvp-loading" style="text-align:center; padding:60px 0 32px;">
-      <div style="position:relative; width:100%; max-width:260px; margin:0 auto 20px;">
-        <div style="height:3px; background:var(--pink-soft); border-radius:99px; overflow:hidden;">
-          <div style="height:100%; background:linear-gradient(90deg,var(--gold-light),var(--gold)); border-radius:99px; animation:barFill 1.6s ease-in-out infinite;"></div>
-        </div>
-        <img src="image/bomboniera_caricamento.png"
-             style="position:absolute; top:50%; width:80px; height:80px; object-fit:contain;
-                    transform:translateY(-50%); left:0;
-                    animation:bombMove 1.6s ease-in-out infinite;
-                    filter:drop-shadow(0 2px 8px rgba(200,149,110,0.4));">
-      </div>
-      <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:20px; color:var(--subtle);">Un momento<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></p>
-    </div>
+    <div class="rsvp-card is-loading">
+      <div class="rsvp-panels-container">
 
-    <div class="rsvp-panels-container" style="display:none;">
+      <!-- LOADING -->
+      <div id="rsvp-loading" class="rsvp-panel active" style="padding-top:52px;">
+        <div style="position:relative; width:100%; max-width:260px; margin:0 auto 20px;">
+          <div style="height:3px; background:var(--pink-soft); border-radius:99px; overflow:hidden;">
+            <div style="height:100%; background:linear-gradient(90deg,var(--gold-light),var(--gold)); border-radius:99px; animation:barFill 1.6s ease-in-out infinite;"></div>
+          </div>
+          <img src="image/bomboniera_caricamento.png"
+               style="position:absolute; top:50%; width:80px; height:80px; object-fit:contain;
+                      transform:translateY(-50%); left:0;
+                      animation:bombMove 1.6s ease-in-out infinite;
+                      filter:drop-shadow(0 2px 8px rgba(200,149,110,0.4));">
+        </div>
+        <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:20px; color:var(--subtle);">Un momento<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></p>
+      </div>
 
       <!-- FORM -->
       <div id="rsvp-form-wrap" class="rsvp-panel rsvp-form">
@@ -1023,7 +1030,7 @@
           </div>
         </div>
         <div class="input-wrap">
-          <input type="number" id="persone" placeholder=" " min="1" max="10">
+          <input type="number" id="persone" placeholder=" " min="1" max="15">
           <label>Quante persone siete in tutto?</label>
         </div>
         <button class="btn-rsvp" onclick="handleRsvp(event)">Confermo la presenza</button>
@@ -1089,15 +1096,17 @@
         <p style="color:var(--subtle); font-size:14px; line-height:1.6;">Controlla il link che hai ricevuto<br>o contatta Giulia.</p>
       </div>
 
-    </div><!-- .rsvp-panels-container -->
+      </div><!-- .rsvp-panels-container -->
+    </div><!-- .rsvp-card -->
   </div><!-- .rsvp-inner -->
 </section>
+
 
 
 <!-- FOOTER -->
 <footer>
   <p style="margin-bottom: 8px; opacity: 0.7;">
-    © <strong>Giulia De Romanis</strong>
+    © 2026 <strong>Giulia De Romanis</strong>
   </p>
   <!-- <p style="margin-top: 16px; font-size: 13px; opacity: 0.4;">11 luglio 2026 · Cisterna di Latina</p> -->
 </footer>
@@ -1395,19 +1404,11 @@
   });
 
   /* ── RSVP panel transitions ── */
-  const RSVP_PANELS = ['rsvp-form-wrap','rsvp-confirmed','rsvp-declined','rsvp-invalid'];
+  const RSVP_PANELS = ['rsvp-loading','rsvp-form-wrap','rsvp-confirmed','rsvp-declined','rsvp-invalid'];
   let rsvpBusy = false;
   const SLIDE_DUR = 380;
 
-  function showLoading(visible) {
-    document.getElementById('rsvp-loading').style.display = visible ? 'block' : 'none';
-    document.querySelector('.rsvp-panels-container').style.display = visible ? 'none' : 'block';
-  }
-
   function showPanel(nextId, dir) {
-    if (nextId === 'rsvp-loading') { showLoading(true); return; }
-    showLoading(false);
-
     const container = document.querySelector('.rsvp-panels-container');
     const currentEl = RSVP_PANELS.map(id => document.getElementById(id)).find(el => el.classList.contains('active'));
     const nextEl = document.getElementById(nextId);
@@ -1443,6 +1444,7 @@
       nextEl.classList.add('active');
       nextEl.style.cssText = '';
       container.style.height = '';
+      document.querySelector('.rsvp-card').classList.toggle('is-loading', nextId === 'rsvp-loading');
       rsvpBusy = false;
     }, SLIDE_DUR + 20);
   }
@@ -1485,11 +1487,15 @@
 
   function handleRsvp(e) {
     const persone = document.getElementById('persone').value.trim();
-    if (!persone && !TOKEN_SINGOLI.includes(rsvpToken)) {
-      document.getElementById('persone').focus();
-      document.getElementById('persone').style.borderColor = '#c0392b';
-      setTimeout(() => { document.getElementById('persone').style.borderColor = ''; }, 1500);
-      return;
+    const personeNum = parseInt(persone, 10);
+    if (!TOKEN_SINGOLI.includes(rsvpToken)) {
+      if (!persone || isNaN(personeNum) || personeNum < 1 || personeNum > 15) {
+        const input = document.getElementById('persone');
+        input.focus();
+        input.style.borderColor = '#c0392b';
+        setTimeout(() => { input.style.borderColor = ''; }, 1500);
+        return;
+      }
     }
     showPanel('rsvp-loading', 'right');
     fetch(SCRIPT_URL + '?action=confirm&token=' + encodeURIComponent(rsvpToken) + '&persone=' + encodeURIComponent(persone || '1'))
