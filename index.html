@@ -385,6 +385,20 @@
     overflow: hidden;
   }
 
+  .quote-bomboniera-bg {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 260px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.13;
+    filter: sepia(1) saturate(4) hue-rotate(5deg) brightness(3);
+    -webkit-mask-image: linear-gradient(to bottom, black 20%, rgba(0,0,0,0.8) 42%, transparent 62%);
+    mask-image: linear-gradient(to bottom, black 20%, rgba(0,0,0,0.8) 42%, transparent 62%);
+  }
+
   .quote-bg-text {
     position: absolute;
     font-family: 'Cormorant Garamond', serif;
@@ -594,16 +608,45 @@
   }
   .btn-decline:hover { color: var(--navy); }
 
-  .rsvp-inner { max-width: 420px; margin: 0 auto; }
+  .rsvp-inner { max-width: 480px; margin: 0 auto; }
 
   .rsvp-card {
     background: #fff;
     border-radius: 20px;
     box-shadow: 0 8px 48px rgba(44,21,34,0.09), 0 1px 0 rgba(200,149,110,0.15);
-    padding: 36px 28px;
     position: relative;
     overflow: hidden;
   }
+
+  .rsvp-panels-container {
+    position: relative;
+    overflow: hidden;
+    min-height: 660px;
+  }
+
+  .rsvp-panel {
+    position: absolute;
+    inset: 0;
+    padding: 36px 28px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow-y: auto;
+  }
+
+  .rsvp-panel.active { display: flex; }
+
+  @keyframes rsvpInRight  { from { transform: translateX(55%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes rsvpInLeft   { from { transform: translateX(-55%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  @keyframes rsvpOutLeft  { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-55%); opacity: 0; } }
+  @keyframes rsvpOutRight { from { transform: translateX(0); opacity: 1; } to { transform: translateX(55%); opacity: 0; } }
+
+  .rsvp-panel.anim-in-right  { display: flex !important; animation: rsvpInRight  0.38s cubic-bezier(0.4,0,0.2,1) forwards; }
+  .rsvp-panel.anim-in-left   { display: flex !important; animation: rsvpInLeft   0.38s cubic-bezier(0.4,0,0.2,1) forwards; }
+  .rsvp-panel.anim-out-left  { display: flex !important; animation: rsvpOutLeft  0.38s cubic-bezier(0.4,0,0.2,1) forwards; }
+  .rsvp-panel.anim-out-right { display: flex !important; animation: rsvpOutRight 0.38s cubic-bezier(0.4,0,0.2,1) forwards; }
   .rsvp-card::before {
     content: '';
     position: absolute;
@@ -657,7 +700,7 @@
     width: 120px; height: 120px;
     object-fit: contain;
     display: block;
-    margin: 0 auto 16px;
+    margin: 30px auto 16px;
     animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s both, floatBob 3s ease-in-out 0.8s infinite;
     filter: drop-shadow(0 6px 18px rgba(232,160,184,0.5));
   }
@@ -759,6 +802,18 @@
   }
 
   @keyframes fadeIn { to { opacity: 1; } }
+  @keyframes dotBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+  .loading-dot {
+    display: inline-block;
+    animation: dotBounce 1.2s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(1) { animation-delay: 0s; }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
   @keyframes barFill {
     0%   { width: 0%;   opacity: 1; }
     80%  { width: 100%; opacity: 1; }
@@ -935,8 +990,9 @@
 
 <!-- QUOTE -->
 <section class="quote-section">
-  <div class="quote-bg-text">✦</div>
-  <div style="position: relative;">
+
+  <img class="quote-bomboniera-bg" src="image/bomboniera_nobg.png" alt="" aria-hidden="true">
+  <div style="position: relative; margin-top: 120px;">
     <span class="quote-mark">"</span>
     <p class="quote-text reveal">
       La laurea non è un punto di arrivo, ma il primo passo verso infinite possibilità.
@@ -953,24 +1009,25 @@
     <p id="rsvp-sub" class="rsvp-sub reveal">Facci sapere se parteciperai. Non vedo l'ora di festeggiare con te!</p>
 
     <div class="rsvp-card">
+      <div class="rsvp-panels-container">
 
       <!-- LOADING -->
-      <div id="rsvp-loading" style="text-align:center; padding:36px 0;">
+      <div id="rsvp-loading" class="rsvp-panel active">
         <div style="position:relative; width:100%; max-width:260px; margin:0 auto 20px;">
           <div style="height:3px; background:var(--pink-soft); border-radius:99px; overflow:hidden;">
             <div style="height:100%; background:linear-gradient(90deg,var(--gold-light),var(--gold)); border-radius:99px; animation:barFill 1.6s ease-in-out infinite;"></div>
           </div>
-          <img src="image/bomboniera_nobg.png"
-               style="position:absolute; top:50%; width:44px; height:44px; object-fit:contain;
+          <img src="image/bomboniera_caricamento.png"
+               style="position:absolute; top:50%; width:80px; height:80px; object-fit:contain;
                       transform:translateY(-50%); left:0;
                       animation:bombMove 1.6s ease-in-out infinite;
                       filter:drop-shadow(0 2px 8px rgba(200,149,110,0.4));">
         </div>
-        <p style="font-family:'Dancing Script',cursive; font-size:22px; color:var(--subtle);">Un momento...</p>
+        <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:20px; color:var(--subtle);">Un momento  <span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></p>
       </div>
 
       <!-- FORM -->
-      <div id="rsvp-form-wrap" class="rsvp-form" style="display:none;">
+      <div id="rsvp-form-wrap" class="rsvp-panel rsvp-form">
         <div class="rsvp-greeting">
           <div class="rsvp-avatar" id="rsvp-avatar"></div>
           <div>
@@ -986,9 +1043,8 @@
       </div>
 
       <!-- CONFIRMED -->
-      <div id="rsvp-confirmed" style="display:none; text-align:center; padding:28px 0 12px;">
-        <img src="image/bomboniera_cuore.png" class="rsvp-bomboniera-cuore">
-
+      <div id="rsvp-confirmed" class="rsvp-panel">
+        
         <div style="width:72px; height:72px; margin:0 auto 20px;">
           <svg viewBox="0 0 72 72" style="width:72px;height:72px;">
             <circle cx="36" cy="36" r="32" fill="rgba(200,149,110,0.08)" stroke="var(--gold-light)" stroke-width="1.5"
@@ -998,11 +1054,12 @@
                   style="stroke-dasharray:53;stroke-dashoffset:53;animation:drawCheck 0.35s cubic-bezier(0.4,0,0.2,1) 0.65s forwards;"/>
           </svg>
         </div>
-
+        
         <div style="animation:fadeUp 0.4s ease 0.7s both;">
           <span class="rsvp-badge rsvp-badge-confirmed">Presenza confermata</span>
         </div>
-
+        
+        <img src="image/bomboniera_cuore.png" class="rsvp-bomboniera-cuore">
         <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--navy);line-height:1.4;margin:18px 0 0;animation:fadeUp 0.4s ease 0.8s both;">
           Non vediamo l'ora,<br><em style="font-style:italic;color:var(--pink);">di festeggiare con te!</em>
         </h3>
@@ -1022,7 +1079,7 @@
       </div>
 
       <!-- DECLINED -->
-      <div id="rsvp-declined" style="display:none; text-align:center; padding:32px 0 12px;">
+      <div id="rsvp-declined" class="rsvp-panel">
         <div style="font-size:52px; margin-bottom:20px; animation:popIn 0.4s ease both;">🥀</div>
         <div style="animation:fadeUp 0.4s ease 0.2s both; margin-bottom:20px;">
           <span class="rsvp-badge rsvp-badge-declined">Risposta ricevuta · non confermato</span>
@@ -1038,12 +1095,13 @@
       </div>
 
       <!-- INVALID -->
-      <div id="rsvp-invalid" style="display:none; text-align:center; padding:36px 0;">
+      <div id="rsvp-invalid" class="rsvp-panel">
         <div style="font-size:40px; margin-bottom:16px;">🔗</div>
         <p style="font-family:'Playfair Display',serif; font-size:20px; color:var(--navy); margin-bottom:10px;">Link non valido</p>
         <p style="color:var(--subtle); font-size:14px; line-height:1.6;">Controlla il link che hai ricevuto<br>o contatta Giulia.</p>
       </div>
 
+      </div><!-- .rsvp-panels-container -->
     </div><!-- .rsvp-card -->
   </div><!-- .rsvp-inner -->
 </section>
@@ -1054,7 +1112,7 @@
   <p style="margin-bottom: 8px; opacity: 0.7;">
     © <strong>Giulia De Romanis</strong>
   </p>
-  <p style="margin-top: 16px; font-size: 13px; opacity: 0.4;">11 luglio 2026 · Cisterna di Latina</p>
+  <!-- <p style="margin-top: 16px; font-size: 13px; opacity: 0.4;">11 luglio 2026 · Cisterna di Latina</p> -->
 </footer>
 
 <div class="toast" id="toast">🌸 Presenza confermata. Ti aspettiamo l'11 luglio! 🌸</div>
@@ -1349,6 +1407,27 @@
     setTimeout(() => r.remove(), 700);
   });
 
+  /* ── RSVP panel transitions ── */
+  const RSVP_PANELS = ['rsvp-loading','rsvp-form-wrap','rsvp-confirmed','rsvp-declined','rsvp-invalid'];
+  let rsvpBusy = false;
+
+  function showPanel(nextId, dir) {
+    const currentEl = RSVP_PANELS.map(id => document.getElementById(id)).find(el => el.classList.contains('active'));
+    const nextEl = document.getElementById(nextId);
+    if (!currentEl || currentEl === nextEl) { nextEl.classList.add('active'); return; }
+    if (rsvpBusy) { currentEl.classList.remove('active'); nextEl.classList.add('active'); return; }
+    rsvpBusy = true;
+    const outCls = dir === 'left' ? 'anim-out-right' : 'anim-out-left';
+    const inCls  = dir === 'left' ? 'anim-in-left'  : 'anim-in-right';
+    currentEl.classList.add(outCls);
+    nextEl.classList.add('active', inCls);
+    setTimeout(() => {
+      currentEl.classList.remove('active', outCls);
+      nextEl.classList.remove(inCls);
+      rsvpBusy = false;
+    }, 380);
+  }
+
   /* ── RSVP con token ── */
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNLKv7LAXGJ1BEn7nGx42lWNFYk7qPtkmpaSxkqnyYv1d9S8JpO-aoVDHVf_mJs1Kz/exec';
   const TOKEN_SINGOLI = ['32JF3W','AMWG4G','B5YGTE','PMT7VG','7FN8N2','QRBR8P','V7BTGD','T5DQ7W','TC8NDX','7G5FK4','Z9BZE7','72EEVA'];
@@ -1356,17 +1435,12 @@
 
   function initRsvp() {
     const token = new URLSearchParams(window.location.search).get('token');
-    if (!token) {
-      document.getElementById('rsvp-loading').style.display = 'none';
-      document.getElementById('rsvp-invalid').style.display = 'block';
-      return;
-    }
+    if (!token) { showPanel('rsvp-invalid', 'right'); return; }
     rsvpToken = token;
     fetch(SCRIPT_URL + '?action=check&token=' + encodeURIComponent(token))
       .then(r => r.json())
       .then(data => {
-        document.getElementById('rsvp-loading').style.display = 'none';
-        if (!data.valido) { document.getElementById('rsvp-invalid').style.display = 'block'; return; }
+        if (!data.valido) { showPanel('rsvp-invalid', 'right'); return; }
         document.getElementById('rsvp-nome-display').textContent = data.nome;
         const av = document.getElementById('rsvp-avatar');
         if (av) av.textContent = data.nome ? data.nome.charAt(0).toUpperCase() : '';
@@ -1374,23 +1448,20 @@
         if (risposta === 'SI') {
           document.getElementById('rsvp-title').style.display = 'none';
           document.getElementById('rsvp-sub').style.display = 'none';
-          document.getElementById('rsvp-confirmed').style.display = 'block'; return;
+          showPanel('rsvp-confirmed', 'right'); return;
         }
         if (risposta === 'NO') {
           document.getElementById('rsvp-title').style.display = 'none';
           document.getElementById('rsvp-sub').style.display = 'none';
           document.getElementById('rsvp-declined-nome').textContent = data.nome;
-          document.getElementById('rsvp-declined').style.display = 'block'; return;
+          showPanel('rsvp-declined', 'right'); return;
         }
         if (TOKEN_SINGOLI.includes(token)) {
           document.getElementById('persone').closest('.input-wrap').style.display = 'none';
         }
-        document.getElementById('rsvp-form-wrap').style.display = 'block';
+        showPanel('rsvp-form-wrap', 'right');
       })
-      .catch(() => {
-        document.getElementById('rsvp-loading').style.display = 'none';
-        document.getElementById('rsvp-invalid').style.display = 'block';
-      });
+      .catch(() => { showPanel('rsvp-invalid', 'right'); });
   }
 
   function handleRsvp(e) {
@@ -1401,16 +1472,14 @@
       setTimeout(() => { document.getElementById('persone').style.borderColor = ''; }, 1500);
       return;
     }
-    document.getElementById('rsvp-form-wrap').style.display = 'none';
-    document.getElementById('rsvp-loading').style.display = 'block';
+    showPanel('rsvp-loading', 'right');
     fetch(SCRIPT_URL + '?action=confirm&token=' + encodeURIComponent(rsvpToken) + '&persone=' + encodeURIComponent(persone || '1'))
       .then(r => r.json())
       .then(data => {
-        document.getElementById('rsvp-loading').style.display = 'none';
         if (data.success || data.message === 'già risposto' || data.message === 'già confermato') {
           document.getElementById('rsvp-title').style.display = 'none';
           document.getElementById('rsvp-sub').style.display = 'none';
-          document.getElementById('rsvp-confirmed').style.display = 'block';
+          showPanel('rsvp-confirmed', 'right');
           const toast = document.getElementById('toast');
           toast.classList.add('show');
           setTimeout(() => toast.classList.remove('show'), 3500);
@@ -1420,26 +1489,22 @@
 
   function handleDecline(e) {
     const nome = document.getElementById('rsvp-nome-display').textContent;
-    document.getElementById('rsvp-form-wrap').style.display = 'none';
-    document.getElementById('rsvp-loading').style.display = 'block';
+    showPanel('rsvp-loading', 'right');
     fetch(SCRIPT_URL + '?action=decline&token=' + encodeURIComponent(rsvpToken))
       .then(r => r.json())
       .then(() => {
-        document.getElementById('rsvp-loading').style.display = 'none';
         document.getElementById('rsvp-title').style.display = 'none';
         document.getElementById('rsvp-sub').style.display = 'none';
         document.getElementById('rsvp-declined-nome').textContent = nome;
-        document.getElementById('rsvp-declined').style.display = 'block';
+        showPanel('rsvp-declined', 'right');
       });
   }
 
   function handleUndo(from) {
-    document.getElementById(from === 'confirmed' ? 'rsvp-confirmed' : 'rsvp-declined').style.display = 'none';
-    document.getElementById('rsvp-loading').style.display = 'block';
+    showPanel('rsvp-loading', 'left');
     fetch(SCRIPT_URL + '?action=undo&token=' + encodeURIComponent(rsvpToken))
       .then(r => r.json())
       .then(() => {
-        document.getElementById('rsvp-loading').style.display = 'none';
         document.getElementById('rsvp-title').style.display = '';
         document.getElementById('rsvp-sub').style.display = '';
         document.getElementById('persone').value = '';
@@ -1448,12 +1513,9 @@
         } else {
           document.getElementById('persone').closest('.input-wrap').style.display = 'block';
         }
-        document.getElementById('rsvp-form-wrap').style.display = 'block';
+        showPanel('rsvp-form-wrap', 'left');
       })
-      .catch(() => {
-        document.getElementById('rsvp-loading').style.display = 'none';
-        document.getElementById(from === 'confirmed' ? 'rsvp-confirmed' : 'rsvp-declined').style.display = 'block';
-      });
+      .catch(() => { showPanel(from === 'confirmed' ? 'rsvp-confirmed' : 'rsvp-declined', 'left'); });
   }
 
   initRsvp();
