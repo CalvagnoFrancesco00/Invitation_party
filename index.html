@@ -506,6 +506,7 @@
   /* ── RSVP ── */
   .rsvp-section {
     padding: 72px 28px;
+    height: 800px;
     text-align: center;
     background: var(--white);
     position: relative;
@@ -996,23 +997,22 @@
     <h2 id="rsvp-title" class="rsvp-title reveal">Conferma<br><em style="font-family:'Dancing Script';font-style:normal;font-weight:500;">la tua presenza</em></h2>
     <p id="rsvp-sub" class="rsvp-sub reveal">Facci sapere se parteciperai. Non vedo l'ora di festeggiare con te!</p>
 
-    <div class="rsvp-card">
-      <div class="rsvp-panels-container">
-
-      <!-- LOADING -->
-      <div id="rsvp-loading" class="rsvp-panel active">
-        <div style="position:relative; width:100%; max-width:260px; margin:0 auto 20px;">
-          <div style="height:3px; background:var(--pink-soft); border-radius:99px; overflow:hidden;">
-            <div style="height:100%; background:linear-gradient(90deg,var(--gold-light),var(--gold)); border-radius:99px; animation:barFill 1.6s ease-in-out infinite;"></div>
-          </div>
-          <img src="image/bomboniera_caricamento.png"
-               style="position:absolute; top:50%; width:80px; height:80px; object-fit:contain;
-                      transform:translateY(-50%); left:0;
-                      animation:bombMove 1.6s ease-in-out infinite;
-                      filter:drop-shadow(0 2px 8px rgba(200,149,110,0.4));">
+    <!-- LOADING (fuori dal container slide, nessun overflow:hidden) -->
+    <div id="rsvp-loading" style="text-align:center; padding:60px 0 32px;">
+      <div style="position:relative; width:100%; max-width:260px; margin:0 auto 20px;">
+        <div style="height:3px; background:var(--pink-soft); border-radius:99px; overflow:hidden;">
+          <div style="height:100%; background:linear-gradient(90deg,var(--gold-light),var(--gold)); border-radius:99px; animation:barFill 1.6s ease-in-out infinite;"></div>
         </div>
-        <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:20px; color:var(--subtle);">Un momento  <span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></p>
+        <img src="image/bomboniera_caricamento.png"
+             style="position:absolute; top:50%; width:80px; height:80px; object-fit:contain;
+                    transform:translateY(-50%); left:0;
+                    animation:bombMove 1.6s ease-in-out infinite;
+                    filter:drop-shadow(0 2px 8px rgba(200,149,110,0.4));">
       </div>
+      <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:20px; color:var(--subtle);">Un momento<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span></p>
+    </div>
+
+    <div class="rsvp-panels-container" style="display:none;">
 
       <!-- FORM -->
       <div id="rsvp-form-wrap" class="rsvp-panel rsvp-form">
@@ -1089,8 +1089,7 @@
         <p style="color:var(--subtle); font-size:14px; line-height:1.6;">Controlla il link che hai ricevuto<br>o contatta Giulia.</p>
       </div>
 
-      </div><!-- .rsvp-panels-container -->
-    </div><!-- .rsvp-card -->
+    </div><!-- .rsvp-panels-container -->
   </div><!-- .rsvp-inner -->
 </section>
 
@@ -1103,7 +1102,7 @@
   <!-- <p style="margin-top: 16px; font-size: 13px; opacity: 0.4;">11 luglio 2026 · Cisterna di Latina</p> -->
 </footer>
 
-<div class="toast" id="toast">🌸 Presenza confermata. Ti aspettiamo l'11 luglio! 🌸</div>
+<div class="toast" id="toast">Presenza confermata. Ti aspettiamo! 🌸</div>
 
 
 <script>
@@ -1396,16 +1395,25 @@
   });
 
   /* ── RSVP panel transitions ── */
-  const RSVP_PANELS = ['rsvp-loading','rsvp-form-wrap','rsvp-confirmed','rsvp-declined','rsvp-invalid'];
+  const RSVP_PANELS = ['rsvp-form-wrap','rsvp-confirmed','rsvp-declined','rsvp-invalid'];
   let rsvpBusy = false;
   const SLIDE_DUR = 380;
 
+  function showLoading(visible) {
+    document.getElementById('rsvp-loading').style.display = visible ? 'block' : 'none';
+    document.querySelector('.rsvp-panels-container').style.display = visible ? 'none' : 'block';
+  }
+
   function showPanel(nextId, dir) {
+    if (nextId === 'rsvp-loading') { showLoading(true); return; }
+    showLoading(false);
+
     const container = document.querySelector('.rsvp-panels-container');
     const currentEl = RSVP_PANELS.map(id => document.getElementById(id)).find(el => el.classList.contains('active'));
     const nextEl = document.getElementById(nextId);
 
-    if (!currentEl || currentEl === nextEl) { nextEl.classList.add('active'); return; }
+    if (!currentEl) { nextEl.classList.add('active'); return; }
+    if (currentEl === nextEl) return;
     if (rsvpBusy) { currentEl.classList.remove('active'); nextEl.classList.add('active'); return; }
     rsvpBusy = true;
 
@@ -1413,11 +1421,9 @@
     const slideIn  = dir === 'right' ? '100%'  : '-100%';
     const ease = `${SLIDE_DUR}ms cubic-bezier(0.4,0,0.2,1)`;
 
-    /* freeze container height to avoid collapse during transition */
     container.style.height = currentEl.offsetHeight + 'px';
 
-    /* position next panel off-screen without removing current from flow */
-    nextEl.style.cssText = `display:flex; position:absolute; inset:0; padding:36px 28px;
+    nextEl.style.cssText = `display:flex; position:absolute; inset:0; padding:20px 0;
       flex-direction:column; align-items:center; text-align:center;
       transform:translateX(${slideIn}); opacity:0;`;
 
