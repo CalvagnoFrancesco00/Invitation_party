@@ -660,6 +660,7 @@
   .rsvp-greeting {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 16px;
     width: 100%;
     margin-bottom: 28px;
@@ -1387,6 +1388,7 @@
     const ease = `${SLIDE_DUR}ms cubic-bezier(0.4,0,0.2,1)`;
 
     container.style.height = currentEl.offsetHeight + 'px';
+    document.querySelector('.rsvp-card').classList.toggle('is-loading', nextId === 'rsvp-loading');
 
     nextEl.style.cssText = `display:flex; position:absolute; inset:0; padding:20px 0;
       flex-direction:column; align-items:center; text-align:center;
@@ -1408,7 +1410,6 @@
       nextEl.classList.add('active');
       nextEl.style.cssText = '';
       container.style.height = '';
-      document.querySelector('.rsvp-card').classList.toggle('is-loading', nextId === 'rsvp-loading');
       rsvpBusy = false;
     }, SLIDE_DUR + 20);
   }
