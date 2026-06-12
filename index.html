@@ -1416,13 +1416,13 @@
 
   /* ── RSVP con token ── */
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNLKv7LAXGJ1BEn7nGx42lWNFYk7qPtkmpaSxkqnyYv1d9S8JpO-aoVDHVf_mJs1Kz/exec';
-  const TOKEN_SINGOLI = ['32JF3W','AMWG4G','B5YGTE','PMT7VG','7FN8N2','QRBR8P','V7BTGD','T5DQ7W','TC8NDX','7G5FK4','Z9BZE7','72EEVA','BG4QY2','DP5Z55'];
+  const TOKEN_SINGOLI = ['32JF3W','AMWG4G','B5YGTE','PMT7VG','7FN8N2','QRBR8P','V7BTGD','T5DQ7W','TC8NDX','7G5FK4','Z9BZE7','72EEVA','BG4QY2','DP5Z55','GWBF3V'];
   let rsvpToken = null;
 
   function initRsvp() {
     const token = new URLSearchParams(window.location.search).get('token');
     if (!token) { showPanel('rsvp-invalid', 'right'); return; }
-    rsvpToken = token;
+    rsvpToken = token; 
     fetch(SCRIPT_URL + '?action=check&token=' + encodeURIComponent(token))
       .then(r => r.json())
       .then(data => {
